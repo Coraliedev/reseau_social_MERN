@@ -7,6 +7,7 @@ router.post("/register",authController.signUp);
 
 //user display 
 router.get('/', userController.getAllUsers)
+router.get('/:id', userController.userInfo)
 
 
 module.exports = router;
