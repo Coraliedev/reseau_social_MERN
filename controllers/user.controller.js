@@ -19,3 +19,29 @@ module.exports.userInfo = (req, res) => {
     }
   }).select('-password')
 };
+
+module.exports.updateUserByID = async (req, res) => {
+  UserModel.exists({ _id: req.params.id }, async (err, doc) => {
+    if (err) {
+      return res.status(500).send(`ID unknow ${req.params.id}`);
+    } else {
+      try {
+        UserModel.findOneAndUpdate(
+          { _id: req.params.id },
+          {
+            $set: {
+              bio:req.body.bio
+            },
+          },
+          { runValidators: true, returnDocument:'after' },
+          (err, docs) => {
+            if (!err) return res.send(docs);
+            else return res.status(500).send({ message: err });
+          }
+        );
+      } catch (err) {
+        return res.status(500).json({ message: err });
+      }
+    }
+  });
+};
