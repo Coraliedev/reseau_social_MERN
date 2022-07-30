@@ -45,3 +45,18 @@ module.exports.updateUserByID = async (req, res) => {
     }
   });
 };
+
+module.exports.deleteUserByID = async (req, res) => {
+  UserModel.exists({ _id: req.params.id }, async (err, doc) => {
+    if (err) {
+      return res.status(500).send(`ID unknow ${req.params.id}`);
+    } else {
+      try {
+        await UserModel.deleteOne({ _id: req.params.id }).exec();
+        return res.status(200).json({ message: "Successfully deleted." });
+      } catch (err) {
+        return res.status(500).json({ message: err });
+      }
+    }
+  });
+};
