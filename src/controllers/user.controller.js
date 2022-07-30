@@ -33,7 +33,7 @@ module.exports.updateUserByID = async (req, res) => {
               bio:req.body.bio
             },
           },
-          { runValidators: true, returnDocument:'after' },
+          { runValidators: true, returnDocument:'after'},
           (err, docs) => {
             if (!err) return res.send(docs);
             else return res.status(500).send({ message: err });
