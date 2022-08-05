@@ -44,10 +44,68 @@ module.exports.deletePost = (req, res) => {
   if (!ObjectID.isValid(req.params.id))
     return res.status(400).send(`ID unknow ${req.params.id}`);
 
-    PostModel.findByIdAndRemove(
+  PostModel.findByIdAndRemove(req.params.id, (err, docs) => {
+    if (!err) res.send(docs);
+    else console.log(`Delete error ${err}`);
+  });
+};
+
+module.exports.likePost = async (req, res) => {
+  if (!ObjectID.isValid(req.params.id))
+    return res.status(400).send(`ID unknow ${req.params.id}`);
+  try {
+    PostModel.findByIdAndUpdate(
+      req.params.id,
+      {
+        $addToSet: { likers: req.body.id },
+      },
+      { new: true },
+      (err, docs) => {
+        if (err) return res.status(400).send(err);
+      }
+    );
+    UserModel.findByIdAndUpdate(
+      req.body.id,
+      {
+        $addToSet: { likes: req.params.id },
+      },
+      { new: true },
+      (err, docs) => {
+        if (!err) res.send(docs);
+        else res.status(400).send(err);
+      }
+    );
+  } catch (err) {
+    return res.status(400).send(err);
+  }
+};
+
+module.exports.unlikePost = async (req, res) => {
+  if (!ObjectID.isValid(req.params.id))
+    return res.status(400).send(`ID unknow ${req.params.id}`);
+    try {
+      PostModel.findByIdAndUpdate(
         req.params.id,
-        (err,docs) => {
-            if (!err) res.send(docs);
-            else console.log(`Delete error ${err}`)
-        })
+        {
+          $pull: { likers: req.body.id },
+        },
+        { new: true },
+        (err, docs) => {
+          if (err) return res.status(400).send(err);
+        }
+      );
+      UserModel.findByIdAndUpdate(
+        req.body.id,
+        {
+          $pull: { likes: req.params.id },
+        },
+        { new: true },
+        (err, docs) => {
+          if (!err) res.send(docs);
+          else res.status(400).send(err);
+        }
+      );
+    } catch (err) {
+      return res.status(400).send(err);
+    }
 };
