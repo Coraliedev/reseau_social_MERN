@@ -69,7 +69,7 @@ module.exports.follow = async (req, res) => {
   }
   try {
     //add to the follower list
-     UserModel.findByIdAndUpdate(
+    UserModel.findByIdAndUpdate(
       req.params.id,
       { $addToSet: { following: req.body.idToFollow } },
       { new: true, upsert: true },
@@ -101,8 +101,8 @@ module.exports.unfollow = async (req, res) => {
     return res.status(400).send(`ID unknow: ${req.params.id}`);
   }
   try {
-     //remove to the follower list
-     UserModel.findByIdAndUpdate(
+    //remove to the follower list
+    UserModel.findByIdAndUpdate(
       req.params.id,
       { $pull: { following: req.body.idToUnfollow } },
       { new: true, upsert: true },
