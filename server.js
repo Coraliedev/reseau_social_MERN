@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const userRoutes = require("./src/routes/user.routes");
+const postRoutes=require('./src/routes/post.routes')
 require("dotenv").config({ path: "./src/config/.env" });
 require("./src/config/db");
 const { checkUser, requireAuth } = require("./src/middleware/auth.middleware");
@@ -19,6 +20,7 @@ app.get("/jwtid", requireAuth, (req, res) => {
 
 //routes
 app.use("/api/user", userRoutes);
+app.use('/api/post', postRoutes)
 
 //server
 app.listen(process.env.PORT, () => {
